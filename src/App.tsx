@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
+import MainLayout from "./components/layouts/MainLayout";
 
 const App = () => {
   return (
-    <div>
-      <Button className="text-2xl">Hello</Button>
+    <div className="container mx-auto">
+     <MainLayout/>
     </div>
   );
 };
