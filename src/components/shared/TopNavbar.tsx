@@ -17,6 +17,7 @@ const TopNavbar = () => {
                    <NavLink to='/about-us'>About Us</NavLink>
                    <NavLink to='/contact-us'>Contact Us</NavLink>
                    <NavLink to='/Blogs'>Blogs</NavLink>
+                   <NavLink to='/login'>Login</NavLink>
                 </div>
         </div>
 
