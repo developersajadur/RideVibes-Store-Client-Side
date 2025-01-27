@@ -5,14 +5,14 @@ import { Link } from "react-router-dom";
 const HomeHeroSection = () => {
   return (
     <div>
-      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-8 w-full">
+      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-8 w-full ">
         {/* Slider Section */}
         <div className="lg:w-1/2 w-full h-[350px] lg:h-[500px]">
           <HomeHeroSlider />
         </div>
 
         {/* Additional Content Section */}
-        <div className="lg:w-1/2 w-full h-[350px] lg:h-[500px] flex flex-col gap-4 lg:gap-8 items-center justify-center">
+        <div className="lg:w-1/2 w-full h-[450px] lg:h-[500px] flex flex-col gap-4 lg:gap-8 items-center justify-center">
           <div className="h-1/2 w-full">
             <div
               style={{

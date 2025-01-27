@@ -1,7 +1,7 @@
 
 const ProductCard = () => {
     return (
-        <div className="w-full md:w-80 bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="w-full md:w-80 lg:w-80 bg-white border border-gray-200 rounded-lg overflow-hidden">
         <img
           className="w-full h-60 object-cover"
           src="/src/assets/bicycle-pic-2.jpg"
