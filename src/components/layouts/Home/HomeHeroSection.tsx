@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const HomeHeroSection = () => {
   return (
     <div>
-      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-8 w-full bg-red-50">
+      <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-8 w-full">
         {/* Slider Section */}
         <div className="lg:w-1/2 w-full h-[350px] lg:h-[500px]">
           <HomeHeroSlider />
