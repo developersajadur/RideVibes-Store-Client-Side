@@ -13,7 +13,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
+import { Button } from "../ui/button";
+import { useToken } from "@/Hooks/useToken";
+
 const Navbar = () => {
+  const token = useToken();
   type TInput = {
     searchData: string;
   };
@@ -37,7 +41,9 @@ const Navbar = () => {
       <div className="hidden md:hidden lg:block">
         <div className="flex justify-between items-center">
           <div className="">
-            <Link to='/' className="text-white text-4xl font-semibold">RideVibes</Link>
+            <Link to="/" className="text-white text-4xl font-semibold">
+              RideVibes
+            </Link>
           </div>
 
           <form className="w-7/12 relative" onSubmit={handleSubmit(onSubmit)}>
@@ -53,16 +59,23 @@ const Navbar = () => {
             />
           </form>
 
-          <div className="flex gap-8 text-secondary text-2xl font-medium">
-            <NavLink to="/">
-              <FaUser />
-            </NavLink>
+          <div className="flex items-center gap-8 text-secondary text-2xl font-medium">
+            {token ? (
+              <NavLink to="/">
+                <FaUser />
+              </NavLink>
+            ) : null}
             <NavLink to="/">
               <FaHeart />
             </NavLink>
             <NavLink to="/">
               <MdShoppingCart />
             </NavLink>
+            {!token ? (
+              <NavLink to="/login">
+                <Button className="bg-secondary text-primary">Login</Button>
+              </NavLink>
+            ) : null}
           </div>
         </div>
       </div>
@@ -71,9 +84,9 @@ const Navbar = () => {
       <div className="block md:block lg:hidden">
         <div className="flex justify-between items-center">
           <div className="">
-            <h1 className="text-white text-xl md:text-2xl font-semibold">
+            <Link to='/' className="text-white text-xl md:text-2xl font-semibold">
               RideVibes
-            </h1>
+            </Link>
           </div>
 
           <form className="w-6/12 relative" onSubmit={handleSubmit(onSubmit)}>
@@ -90,32 +103,55 @@ const Navbar = () => {
           </form>
 
           <div className="">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <button onClick={() => setOpen(true)}>
-            <IoMenu className="text-secondary font-medium" size={28} />
-          </button>
-        </SheetTrigger>
-        <SheetContent className="h-full">
-          <ScrollArea className="h-full">
-            <SheetHeader>
-              <SheetTitle className="mb-5 text-2xl font-semibold">
-                RideVibes
-              </SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col gap-5 text-primary text-lg font-medium">
-              <NavLink to="/profile" onClick={handleClose}>Profile</NavLink>
-              <NavLink to="/bicycles" onClick={handleClose}>Cart</NavLink>
-              <NavLink to="/favorites" onClick={handleClose}>Favorites</NavLink>
-              <NavLink to="/bicycles" onClick={handleClose}>Bicycles</NavLink>
-              <NavLink to="/about-us" onClick={handleClose}>About Us</NavLink>
-              <NavLink to="/contact-us" onClick={handleClose}>Contact Us</NavLink>
-              <NavLink to="/blogs" onClick={handleClose}>Blogs</NavLink>
-            </div>
-          </ScrollArea>
-        </SheetContent>
-      </Sheet>
-    </div>
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <button onClick={() => setOpen(true)}>
+                  <IoMenu className="text-secondary font-medium" size={28} />
+                </button>
+              </SheetTrigger>
+              <SheetContent className="h-full">
+                <ScrollArea className="h-full">
+                  <SheetHeader>
+                    <Link to='/'  onClick={handleClose} className="mb-5 text-3xl font-semibold">
+                      RideVibes
+                    </Link>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-5 text-primary text-lg font-medium">
+                    {token ? (
+                      <NavLink to="/profile" onClick={handleClose}>
+                        Profile
+                      </NavLink>
+                    ) : null}
+                    <NavLink to="/bicycles" onClick={handleClose}>
+                      Cart
+                    </NavLink>
+                    <NavLink to="/favorites" onClick={handleClose}>
+                      Favorites
+                    </NavLink>
+                    <NavLink to="/bicycles" onClick={handleClose}>
+                      Bicycles
+                    </NavLink>
+                    <NavLink to="/about-us" onClick={handleClose}>
+                      About Us
+                    </NavLink>
+                    <NavLink to="/contact-us" onClick={handleClose}>
+                      Contact Us
+                    </NavLink>
+                    <NavLink to="/blogs" onClick={handleClose}>
+                      Blogs
+                    </NavLink>
+                    {!token ? (
+                      <NavLink  onClick={handleClose} className="w-full" to="/login">
+                        <Button className="bg-secondary text-primary w-full">
+                          Login
+                        </Button>
+                      </NavLink>
+                    ) : null}
+                  </div>
+                </ScrollArea>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </div>

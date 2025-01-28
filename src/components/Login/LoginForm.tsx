@@ -1,11 +1,12 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { verifyToken } from "@/utils/verifyToken";
 import { setUser, TUser } from "@/redux/features/auth/authSlice";
+import { toast } from 'sonner';
 
 type TUserData = {
   email: string;
@@ -16,6 +17,7 @@ const LoginForm = () => {
 
     const dispatch = useDispatch()
     const [login] = useLoginMutation();
+    const navigate = useNavigate()
 
   const {
     register,
@@ -24,14 +26,21 @@ const LoginForm = () => {
   } = useForm<TUserData>();
 
   const onSubmit: SubmitHandler<TUserData> = async(userData) => {
+    const toastId = toast.loading('Logging in');
     try {
         const res = await login(userData).unwrap();
+        console.log(res);
 
         const user = verifyToken(res.data.token) as TUser;
         dispatch(setUser({user: user, token: res.data.token}))
+        toast.success('Logged in', { id: toastId, duration: 2000 });
+        navigate('/');
 
-    } catch (error) {
-        console.log(error);
+    } catch (error:any) {
+      const errorMessage =
+      error?.data?.message || error?.error || "Something went wrong!";
+    
+    toast.error(errorMessage, { id: toastId, duration: 2000 });
     }
 
   };

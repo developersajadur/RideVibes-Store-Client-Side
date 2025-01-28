@@ -3,6 +3,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
 const TopNavbar = () => {
+
     return (
         <div className="bg-secondary w-full px-2 md:px-8 lg:px-10 py-2 hidden md:block lg:block">
             <div className="flex justify-between items-center">
@@ -17,7 +18,7 @@ const TopNavbar = () => {
                    <NavLink to='/about-us'>About Us</NavLink>
                    <NavLink to='/contact-us'>Contact Us</NavLink>
                    <NavLink to='/Blogs'>Blogs</NavLink>
-                   <NavLink to='/login'>Login</NavLink>
+                   {/* <NavLink to='/login'>Login</NavLink> */}
                 </div>
         </div>
 

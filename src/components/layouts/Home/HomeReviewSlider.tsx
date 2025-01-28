@@ -18,7 +18,7 @@ const reviews = [
     imageUrl: "/path-to-profile-image.jpg",
   },
   {
-    id: 1,
+    id: 2,
     review:
       "I have got my bike number in 16 days. Their performance is too good, and their behavior is excellent. Kichu kichu somoy tara ektu busy thakar karo...",
     name: "Badsha Sarder",
@@ -26,7 +26,7 @@ const reviews = [
     imageUrl: "/path-to-profile-image.jpg",
   },
   {
-    id: 2,
+    id: 3,
     review:
       "Very satisfied with the service. Received my bike on time and in perfect condition. Highly recommended! The support was great.",
     name: "Rahim Uddin",
@@ -34,7 +34,7 @@ const reviews = [
     imageUrl: "/path-to-profile-image.jpg",
   },
   {
-    id: 3,
+    id: 4,
     review:
       "Great experience overall. The process was smooth, and they were very helpful throughout. I would definitely recommend them to others.",
     name: "Jamal Khan",
