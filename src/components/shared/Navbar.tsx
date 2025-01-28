@@ -9,7 +9,6 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState } from "react";
@@ -61,7 +60,7 @@ const Navbar = () => {
 
           <div className="flex items-center gap-8 text-secondary text-2xl font-medium">
             {token ? (
-              <NavLink to="/">
+              <NavLink to="/profile">
                 <FaUser />
               </NavLink>
             ) : null}
