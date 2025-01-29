@@ -5,12 +5,12 @@ import {
   IoHeart,
   IoHeartOutline,
   IoShareSocialOutline,
-  IoStar,
 } from "react-icons/io5";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 import { useGetSingleProductBySlugQuery } from "@/redux/features/productApi";
-import { TProduct } from "@/types";
+import { TCartData, TProduct } from "@/types";
+import { toast } from "sonner";
 
 const ProductDetails = () => {
   const params = useParams();
@@ -33,6 +33,19 @@ const ProductDetails = () => {
 
   const selectThumbnail = (index: number) => {
     setCurrentImageIndex(index);
+  };
+
+  const handleSaveProductOnLocalStorage = (product: TProduct) => {
+    const cartItems = JSON.parse(localStorage.getItem("cart-items") || "[]");
+  
+    const existingProduct = cartItems.find((item: TCartData) => item._id === product._id);   
+    if (existingProduct) {
+      toast.error("You have already added this product!");
+      return;
+    }
+    cartItems.push({ ...product, orderQuantity: 1 });
+    localStorage.setItem("cart-items", JSON.stringify(cartItems));
+    toast.success("Product added to cart successfully!");
   };
 
   return (
@@ -158,7 +171,8 @@ const ProductDetails = () => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 mt-auto">
-            <button className="grow py-3 px-6 bg-secondary text-white hover:bg-primary hover:text-secondary rounded-md">
+            <button onClick={() => handleSaveProductOnLocalStorage(product)}
+             className="grow py-3 px-6 bg-secondary text-white hover:bg-primary hover:text-secondary rounded-md">
             🛒 Add To Cart
             </button>
             <button className="grow py-3 px-6 border bg-transparent border-gray-300 text-primary hover:bg-gray-100 rounded-md">

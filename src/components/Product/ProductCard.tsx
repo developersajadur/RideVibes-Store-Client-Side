@@ -1,7 +1,8 @@
-import { TProduct } from "@/types";
+import { TCartData, TProduct } from "@/types";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 
 type ProductCardProps = {
@@ -9,6 +10,20 @@ type ProductCardProps = {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+
+  const handleSaveProductOnLocalStorage = (product: TProduct) => {
+    const cartItems = JSON.parse(localStorage.getItem("cart-items") || "[]");
+  
+    const existingProduct = cartItems.find((item: TCartData) => item._id === product._id);   
+    if (existingProduct) {
+      toast.error("You have already added this product!");
+      return;
+    }
+    cartItems.push({ ...product, orderQuantity: 1 });
+    localStorage.setItem("cart-items", JSON.stringify(cartItems));
+    toast.success("Product added to cart successfully!");
+  };
+  
 
   return (
     <div className="w-full md:w-80 lg:w-80 bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -38,7 +53,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               View Details
             </Button>
           </Link>
-          <Button className="flex-1 bg-transparent border border-gray-400 text-primary font-semibold py-2 rounded-lg hover:bg-gray-100 transition">
+          <Button 
+          onClick={() => handleSaveProductOnLocalStorage(product)}
+          className="flex-1 bg-transparent border border-gray-400 text-primary font-semibold py-2 rounded-lg hover:bg-gray-100 transition">
             🛒 Add To Cart
           </Button>
         </div>
