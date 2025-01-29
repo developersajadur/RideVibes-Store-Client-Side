@@ -67,7 +67,7 @@ const Navbar = () => {
             <NavLink to="/">
               <FaHeart />
             </NavLink>
-            <NavLink to="/">
+            <NavLink to="/shopping-cart">
               <MdShoppingCart />
             </NavLink>
             {!token ? (
@@ -121,7 +121,7 @@ const Navbar = () => {
                         Profile
                       </NavLink>
                     ) : null}
-                    <NavLink to="/bicycles" onClick={handleClose}>
+                    <NavLink to="/shopping-cart" onClick={handleClose}>
                       Cart
                     </NavLink>
                     <NavLink to="/favorites" onClick={handleClose}>

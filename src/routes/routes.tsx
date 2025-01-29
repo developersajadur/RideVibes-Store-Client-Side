@@ -2,12 +2,12 @@ import App from "@/App";
 import AboutUs from "@/pages/AboutUs";
 import Blogs from "@/pages/Blogs";
 import ContactUs from "@/pages/ContactUs";
-import Favorites from "@/pages/Favorites";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import ProductDetails from "@/pages/ProductDetails";
 import Products from "@/pages/Products";
 import Profile from "@/pages/Profile";
+import ShoppingCart from "@/pages/ShoppingCart";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -36,8 +36,8 @@ const router = createBrowserRouter([
             element: <ProductDetails/>,
         },
         {
-            path: '/favorites',
-            element: <Favorites/>,
+            path: '/shopping-cart',
+            element: <ShoppingCart/>,
         },
         {
             path: '/about-us',
