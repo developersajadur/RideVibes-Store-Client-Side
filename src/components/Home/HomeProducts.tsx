@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const HomeProducts = () => {
   const {data} = useGetAllProductsQuery([
-    { name: 'limit', value: 6}
+    { name: 'limit', value: 8}
   ])
   const products = data?.data?.data;
   // console.log(products);
@@ -23,7 +23,7 @@ const HomeProducts = () => {
         </p>
       </div>
       <div className="w-full flex justify-center">
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {
             products?.map((product: TProduct) => (
               <ProductCard key={product._id} product={product} />

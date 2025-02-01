@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState<TCartData[]>([]);
-  const [shippingCost, setShippingCost] = useState(5.0);
+  const [shippingCost, setShippingCost] = useState(0);
   const [promoCode, setPromoCode] = useState("");
   const [discountApplied, setDiscountApplied] = useState(false);
 

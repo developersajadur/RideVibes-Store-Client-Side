@@ -1,6 +1,6 @@
-import HomeProducts from "@/components/layouts/Home/HomeProducts";
-import HomeHeroSection from "@/components/layouts/Home/HomeHeroSection";
-import HomeReview from "@/components/layouts/Home/HomeReview";
+import HomeProducts from "@/components/Home/HomeProducts";
+import HomeHeroSection from "@/components/Home/HomeHeroSection";
+import HomeReview from "@/components/Home/HomeReview";
 
 const Home = () => {
     return (
