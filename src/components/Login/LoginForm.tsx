@@ -29,7 +29,7 @@ const LoginForm = () => {
     const toastId = toast.loading('Logging in');
     try {
         const res = await login(userData).unwrap();
-        console.log(res);
+        // console.log(res);
 
         const user = verifyToken(res.data.token) as TUser;
         dispatch(setUser({user: user, token: res.data.token}))

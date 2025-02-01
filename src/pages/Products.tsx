@@ -5,101 +5,67 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Products = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search") || "";
+
   const { register, handleSubmit, setValue, reset } = useForm({
     defaultValues: {
-      category: "all", // Default value as "all"
-      brand: "all", // Default value as "all"
-      minPrice: "", // Default empty
-      maxPrice: "", // Default empty
+      category: "all",
+      brand: "all",
+      minPrice: "",
+      maxPrice: "",
       availability: "all",
     },
   });
 
-  const [query, setQuery] = useState<any>([]);
+  const [query, setQuery] = useState<any[]>([]);
 
-  const { data } = useGetAllProductsQuery(query.length ? query : undefined);
+  useEffect(() => {
+    if (searchQuery) {
+      setQuery([{ name: "search", value: searchQuery }]);
+    }else{
+      setQuery([]);
+    }
+  }, [searchQuery]);
+
+  const { data } = useGetAllProductsQuery(query.length ? query : []);
+
   const products = data?.data?.data;
 
   const onSubmit = (formData: any) => {
     const { minPrice, maxPrice, ...otherFilters } = formData;
 
-    const newQuery = Object.entries(otherFilters)
-      .filter(([key, value]) => value !== "all" && value !== "") // Ignore "all" and empty values
-      .map(([key, value]) => {
+    let newQuery: any[] = [];
+
+    Object.entries(otherFilters).forEach(([key, value]) => {
+      if (value !== "all" && value !== "") {
         if (key === "availability") {
-          // Map availability to boolean (inStock)
-          return {
-            name: "inStock",
-            value: value === "available" ? true : value === "out_of_stock" ? false : undefined,
-          };
+          newQuery.push({ name: "inStock", value: value === "available" });
+        } else {
+          newQuery.push({ name: key, value });
         }
-        return { name: key, value: value as string | number };
-      })
-      .filter(query => query.value !== undefined); // Remove undefined values from the query
+      }
+    });
 
-    if (minPrice !== "") {
-      newQuery.push({
-        name: "minPrice",
-        value: parseFloat(minPrice), // Convert minPrice to number
-      });
-    }
+    if (minPrice) newQuery.push({ name: "minPrice", value: parseFloat(minPrice) });
+    if (maxPrice) newQuery.push({ name: "maxPrice", value: parseFloat(maxPrice) });
 
-    if (maxPrice !== "") {
-      newQuery.push({
-        name: "maxPrice",
-        value: parseFloat(maxPrice), // Convert maxPrice to number
-      });
-    }
+    if (searchQuery) newQuery.push({ name: "search", value: searchQuery });
 
-    setQuery(newQuery); // Set the query with the valid filters
-    console.log("Applied Filters:", newQuery);
+    setQuery(newQuery);
   };
 
   const handleClear = () => {
-    reset(); // Reset the form
-    setQuery([]); // Clear the filters
+    reset();
+    setQuery([]);
   };
 
-  const applyFilters = (product: TProduct) => {
-    let isWithinPriceRange = true;
-
-    // Apply price range filter if minPrice or maxPrice is set
-    const minPrice = query.find((q: any) => q.name === "minPrice")?.value;
-    const maxPrice = query.find((q: any) => q.name === "maxPrice")?.value;
-
-    if (minPrice && product.price < minPrice) {
-      isWithinPriceRange = false;
-    }
-
-    if (maxPrice && product.price > maxPrice) {
-      isWithinPriceRange = false;
-    }
-
-    // Apply availability filter if set
-    const availabilityFilter = query.find((q: any) => q.name === "inStock")?.value;
-    if (availabilityFilter !== undefined && product.inStock !== availabilityFilter) {
-      isWithinPriceRange = false;
-    }
-
-    // Apply category and brand filters
-    const categoryFilter = query.find((q: any) => q.name === "category")?.value;
-    const brandFilter = query.find((q: any) => q.name === "brand")?.value;
-
-    if (categoryFilter && product.category !== categoryFilter) {
-      isWithinPriceRange = false;
-    }
-
-    if (brandFilter && product.brand !== brandFilter) {
-      isWithinPriceRange = false;
-    }
-
-    return isWithinPriceRange;
-  };
-
-  const filteredProducts = products?.filter(applyFilters);
+  const filteredProducts = products || [];
 
   return (
     <div className="mt-3 lg:mt-4 mb-5 lg:mb-5">
@@ -111,7 +77,7 @@ const Products = () => {
       <div className="w-full p-4 border rounded-md">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row items-center justify-center gap-4">
           {/* Category Select */}
-          <Select onValueChange={(value) => setValue("category", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("category", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
@@ -124,7 +90,7 @@ const Products = () => {
           </Select>
 
           {/* Brand Select */}
-          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Brand" />
             </SelectTrigger>
@@ -139,22 +105,12 @@ const Products = () => {
 
           {/* Price Range */}
           <div className="flex gap-2 w-full md:w-auto">
-            <Input
-              type="number"
-              placeholder="Min Price"
-              {...register("minPrice")}
-              className="w-full md:w-[120px]"
-            />
-            <Input
-              type="number"
-              placeholder="Max Price"
-              {...register("maxPrice")}
-              className="w-full md:w-[120px]"
-            />
+            <Input type="number" placeholder="Min Price" {...register("minPrice")} className="w-full md:w-[120px]" />
+            <Input type="number" placeholder="Max Price" {...register("maxPrice")} className="w-full md:w-[120px]" />
           </div>
 
           {/* Availability Select */}
-          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Availability" />
             </SelectTrigger>
@@ -178,7 +134,7 @@ const Products = () => {
       {/* Product Grid */}
       <div className="w-full flex justify-center mt-6">
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredProducts?.length ? (
+          {filteredProducts.length ? (
             filteredProducts.map((product: TProduct) => <ProductCard key={product._id} product={product} />)
           ) : (
             <div>No products found...</div>

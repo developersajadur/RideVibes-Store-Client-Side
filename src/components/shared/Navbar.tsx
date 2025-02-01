@@ -2,8 +2,8 @@ import { Input } from "@/components/ui/input";
 import { MdShoppingCart } from "react-icons/md";
 import { IoMenu } from "react-icons/io5";
 import { FaUser, FaSearch, FaHeart } from "react-icons/fa";
-import { Link, NavLink } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -11,48 +11,45 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from "react";
 import { Button } from "../ui/button";
 import { useToken } from "@/Hooks/useToken";
 
 const Navbar = () => {
   const token = useToken();
-  type TInput = {
-    searchData: string;
-  };
-
-  const [open, setOpen] = useState(false);
+  const [searchData, setSearchData] = useState(""); // Local state for search input
+  const [open, setOpen] = useState(false); // For mobile menu toggle
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<TInput>();
-  const onSubmit: SubmitHandler<TInput> = (data: TInput) => console.log(data);
+  const handleSearchSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    navigate(`/bicycles/?search=${searchData}`);
+  };
+  
 
   return (
     <div className="bg-primary w-full px-2 md:px-8 lg:px-10 py-4 md:py-5 lg:py-6">
       {/* Large Device Navbar */}
       <div className="hidden md:hidden lg:block">
         <div className="flex justify-between items-center">
-          <div className="">
+          <div>
             <Link to="/" className="text-white text-4xl font-semibold">
               RideVibes
             </Link>
           </div>
 
-          <form className="w-7/12 relative" onSubmit={handleSubmit(onSubmit)}>
+          <form className="w-7/12 relative" onSubmit={handleSearchSubmit}>
             <FaSearch
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
             />
             <Input
-              {...register("searchData", { required: true })}
               type="text"
+              value={searchData}
+              onChange={(e) => setSearchData(e.target.value)} 
               placeholder="Search Here"
               className="pl-10 bg-transparent border-secondary focus:ring-0 focus:outline-none text-white"
             />
@@ -82,26 +79,27 @@ const Navbar = () => {
       {/* Small and medium Device navbar */}
       <div className="block md:block lg:hidden">
         <div className="flex justify-between items-center">
-          <div className="">
-            <Link to='/' className="text-white text-xl md:text-2xl font-semibold">
+          <div>
+            <Link to="/" className="text-white text-xl md:text-2xl font-semibold">
               RideVibes
             </Link>
           </div>
 
-          <form className="w-6/12 relative" onSubmit={handleSubmit(onSubmit)}>
+          <form className="w-6/12 relative" onSubmit={handleSearchSubmit}>
             <FaSearch
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
             />
             <Input
-              {...register("searchData", { required: true })}
               type="text"
+              value={searchData} // Bind input value to state
+              onChange={(e) => setSearchData(e.target.value)} // Update state on input change
               placeholder="Search Here"
               className="pl-10 bg-transparent border-secondary focus:ring-0 focus:outline-none text-white"
             />
           </form>
 
-          <div className="">
+          <div>
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <button onClick={() => setOpen(true)}>
@@ -111,7 +109,7 @@ const Navbar = () => {
               <SheetContent className="h-full">
                 <ScrollArea className="h-full">
                   <SheetHeader>
-                    <Link to='/'  onClick={handleClose} className="mb-5 text-3xl font-semibold">
+                    <Link to="/" onClick={handleClose} className="mb-5 text-3xl font-semibold">
                       RideVibes
                     </Link>
                   </SheetHeader>
@@ -140,7 +138,7 @@ const Navbar = () => {
                       Blogs
                     </NavLink>
                     {!token ? (
-                      <NavLink  onClick={handleClose} className="w-full" to="/login">
+                      <NavLink onClick={handleClose} className="w-full" to="/login">
                         <Button className="bg-secondary text-primary w-full">
                           Login
                         </Button>
