@@ -1,5 +1,5 @@
 import { TQueryParam, TResponseRedux } from "@/types";
-import { baseApi } from "../api/baseApi";
+import { baseApi } from "../../api/baseApi";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -35,9 +35,19 @@ const productApi = baseApi.injectEndpoints({
           body: args.data,
         }
       }
-    })
+    }),
+    getSingleProductById: builder.query({
+      query: (args) => {
+        // console.log(args);
+        return {
+          url: `/bicycles/${args.id}`,
+          method: 'GET',
+          body: args.data,
+        }
+      }
+    }),
   }),
 });
 
-export const { useGetAllProductsQuery, useGetSingleProductBySlugQuery } = productApi;
+export const { useGetAllProductsQuery, useGetSingleProductBySlugQuery, useGetSingleProductByIdQuery } = productApi;
 export default productApi;

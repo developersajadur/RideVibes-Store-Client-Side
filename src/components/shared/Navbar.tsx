@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { MdShoppingCart } from "react-icons/md";
 import { IoMenu } from "react-icons/io5";
-import { FaUser, FaSearch, FaHeart } from "react-icons/fa";
+import { FaUser, FaSearch } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -61,9 +61,6 @@ const Navbar = () => {
                 <FaUser />
               </NavLink>
             ) : null}
-            <NavLink to="/">
-              <FaHeart />
-            </NavLink>
             <NavLink to="/shopping-cart">
               <MdShoppingCart />
             </NavLink>
@@ -121,9 +118,6 @@ const Navbar = () => {
                     ) : null}
                     <NavLink to="/shopping-cart" onClick={handleClose}>
                       Cart
-                    </NavLink>
-                    <NavLink to="/favorites" onClick={handleClose}>
-                      Favorites
                     </NavLink>
                     <NavLink to="/bicycles" onClick={handleClose}>
                       Bicycles

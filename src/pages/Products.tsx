@@ -1,5 +1,5 @@
 import ProductCard from "@/components/Product/ProductCard";
-import { useGetAllProductsQuery } from "@/redux/features/productApi";
+import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -77,7 +77,7 @@ const Products = () => {
       <div className="w-full p-4 border rounded-md">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row items-center justify-center gap-4">
           {/* Category Select */}
-          <Select onValueChange={(value) => setValue("category", value)} defaultValue="all">
+          <Select onValueChange={(value) => setValue("category", value)} defaultValue="">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
@@ -90,7 +90,7 @@ const Products = () => {
           </Select>
 
           {/* Brand Select */}
-          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="all">
+          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Brand" />
             </SelectTrigger>
@@ -110,7 +110,7 @@ const Products = () => {
           </div>
 
           {/* Availability Select */}
-          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="all">
+          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Availability" />
             </SelectTrigger>

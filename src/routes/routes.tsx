@@ -1,9 +1,12 @@
 import App from "@/App";
 import AboutUs from "@/pages/AboutUs";
 import Blogs from "@/pages/Blogs";
+import Checkout from "@/pages/Checkout";
 import ContactUs from "@/pages/ContactUs";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
+import OrderVerification from "@/pages/OrderVerification";
+import PaymentSuccess from "@/pages/PaymentSuccess";
 import ProductDetails from "@/pages/ProductDetails";
 import Products from "@/pages/Products";
 import Profile from "@/pages/Profile";
@@ -50,6 +53,14 @@ const router = createBrowserRouter([
         {
             path: '/blogs',
             element: <Blogs/>,
+        },
+        {
+            path: '/checkout/:productId',
+            element: <Checkout/>,
+        },
+        {
+            path: '/order/verify',
+            element: <OrderVerification/>,
         },
       ]
     },

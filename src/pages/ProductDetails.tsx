@@ -8,7 +8,7 @@ import {
 } from "react-icons/io5";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useParams } from "react-router-dom";
-import { useGetSingleProductBySlugQuery } from "@/redux/features/productApi";
+import { useGetSingleProductBySlugQuery } from "@/redux/features/product/productApi";
 import { TCartData, TProduct } from "@/types";
 import { toast } from "sonner";
 
