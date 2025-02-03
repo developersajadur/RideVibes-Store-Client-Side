@@ -22,6 +22,7 @@ import {
   useUpdateUserMutation,
 } from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
+import { useGetMyOrdersQuery } from "@/redux/features/order/orderApi";
 
 const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
@@ -34,6 +35,8 @@ const Profile = () => {
   const { data, refetch } = useGetUserQuery(userId);
   const [updateUser] = useUpdateUserMutation();
   const [changePassword] = useChangePasswordMutation()
+  const {data: orders} = useGetMyOrdersQuery({})
+  console.log(orders);
   const user = data?.data;
 
   const { register, handleSubmit, reset } = useForm({
@@ -55,10 +58,10 @@ const Profile = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const [orders, setOrders] = useState([
-    { id: "1234", item: "Mountain Bike", price: "$500", status: "Delivered" },
-    { id: "5678", item: "Helmet", price: "$50", status: "Processing" },
-  ]);
+//   const [orders, setOrders] = useState([
+//     { id: "1234", item: "Mountain Bike", price: "$500", status: "Delivered" },
+//     { id: "5678", item: "Helmet", price: "$50", status: "Processing" },
+//   ]);
 
   const handleLogOut = () => {
     dispatch(logOutUser());
@@ -274,27 +277,28 @@ const Profile = () => {
 
         {/* Orders Section */}
         <TabsContent value="orders">
-          <div className="space-y-4">
-            {orders.length > 0 ? (
-              orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="flex justify-between p-4 bg-gray-100 rounded-lg"
-                >
-                  <div>
-                    <p className="font-semibold">{order.item}</p>
-                    <p className="text-sm text-gray-600">
-                      Status: {order.status}
-                    </p>
-                  </div>
-                  <p className="font-semibold">{order.price}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">No orders found.</p>
-            )}
+  <div className="space-y-4">
+    {orders?.data && orders.data.length > 0 ? (
+      orders.data.map((order: any) => (
+        <div
+          key={order?._id}
+          className="flex justify-between p-4 bg-gray-100 rounded-lg"
+        >
+          <div>
+            <p className="font-semibold">Transaction Id: {order?.transaction?.id}</p>
+            <p className="text-sm text-gray-600">
+              Status: {order?.status}
+            </p>
           </div>
-        </TabsContent>
+          <p className="font-semibold">Amount: {order?.totalPrice} BDT</p>
+        </div>
+      ))
+    ) : (
+      <p className="text-center text-gray-500">No orders found.</p>
+    )}
+  </div>
+</TabsContent>
+
       </Tabs>
 
       {/* Logout Button */}
