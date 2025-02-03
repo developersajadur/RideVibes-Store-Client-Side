@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,31 +12,23 @@ import { useUser } from "@/Hooks/useUser";
 import { useGetUserQuery, useUpdateUserMutation } from "@/redux/features/user/userApi";
 import { useAppDispatch } from "@/redux/hooks";
 
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
+const UPLOAD_PRESET = "sajadurrahmanpresent"; // Cloudinary upload preset
+
 const Profile = () => {
-    const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {userId} = useUser();
-  const {data} = useGetUserQuery(userId);
-  const [updateUser] = useUpdateUserMutation()
+  const { userId } = useUser();
+  const { data } = useGetUserQuery(userId);
+  const [updateUser] = useUpdateUserMutation();
   const user = data?.data;
-//   console.log(user);
 
+  const { register, handleSubmit, reset } = useForm();
+  const { register: registerPassword, handleSubmit: handlePasswordSubmit, reset: resetPassword } = useForm();
 
-  const { register, handleSubmit, reset } = useForm({
-    // defaultValues: {
-    //   name: user?.name || "N/A",
-    //   city: user?.city || "N/A",
-    //   address: user?.address || "N/A",
-    //   image: user?.profileImage || "N/A",
-    // },
-  });
-
-  const { register: registerPassword, handleSubmit: handlePasswordSubmit, reset: resetPassword } = useForm({
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-    },
-  });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(user?.profileImage || null);
+  const [loading, setLoading] = useState(false);
 
   const [orders, setOrders] = useState([
     { id: "1234", item: "Mountain Bike", price: "$500", status: "Delivered" },
@@ -48,13 +41,49 @@ const Profile = () => {
     navigate("/login");
   };
 
-  const handleProfileUpdate = async (data: any) => {
+  // Handle file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file: File) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
     try {
-      const response = await updateUser(data);
+      const response = await axios.post(CLOUDINARY_URL, formData);
+      return response.data.secure_url;
+    } catch (error) {
+      toast.error("Image upload failed.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle profile update
+  const handleProfileUpdate = async (data: any) => {
+    let uploadedImageUrl = previewImage;
+    if (selectedImage) {
+      uploadedImageUrl = await uploadImageToCloudinary(selectedImage);
+    }
+
+    if (!uploadedImageUrl) return;
+
+    const updatedData = { ...data, profileImage: uploadedImageUrl };
+
+    try {
+      await updateUser(updatedData);
       toast.success("Profile updated successfully!");
       reset();
     } catch (error) {
-      console.error("Update Failed:", error);
       toast.error("Failed to update profile. Please try again.");
     }
   };
@@ -78,9 +107,9 @@ const Profile = () => {
 
         {/* Profile Section */}
         <TabsContent value="profile">
-          <div className="space-y-4 text-center">
+          <div className="space-y-2 text-center">
             <img
-              src={user?.image || "/default-avatar.png"}
+              src={previewImage || user?.profileImage}
               alt="Profile"
               className="w-24 h-24 mx-auto rounded-full object-cover border"
             />
@@ -89,7 +118,7 @@ const Profile = () => {
             <p className="text-gray-600">{user?.phone}</p>
             <p className="text-gray-600">{user?.city}, {user?.address}</p>
 
-            {/* Open Edit Profile Modal */}
+            {/* Edit Profile Modal */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="w-full bg-blue-600">Edit Profile</Button>
@@ -102,13 +131,18 @@ const Profile = () => {
                   <Input type="text" {...register("name")} placeholder="Enter name" className="w-full" />
                   <Input type="text" {...register("city")} placeholder="Enter city" className="w-full" />
                   <Input type="text" {...register("address")} placeholder="Enter address" className="w-full" />
-                  <Input type="text" {...register("profileImage")} placeholder="Enter profile image URL" className="w-full" />
-                  <Button type="submit" className="w-full bg-blue-600">Update</Button>
+
+                  {/* File Input for Profile Image */}
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="w-full border p-2 rounded-md" />
+
+                  <Button type="submit" className="w-full bg-blue-600" disabled={loading}>
+                    {loading ? "Uploading..." : "Update"}
+                  </Button>
                 </form>
               </DialogContent>
             </Dialog>
 
-            {/* Open Change Password Modal */}
+            {/* Change Password Modal */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button className="w-full bg-gray-600">Change Password</Button>
