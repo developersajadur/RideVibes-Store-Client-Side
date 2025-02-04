@@ -1,16 +1,16 @@
 import App from "@/App";
-import AboutUs from "@/pages/AboutUs";
-import Blogs from "@/pages/Blogs";
-import Checkout from "@/pages/Checkout";
-import ContactUs from "@/pages/ContactUs";
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
-import OrderVerification from "@/pages/OrderVerification";
-import PaymentSuccess from "@/pages/PaymentSuccess";
-import ProductDetails from "@/pages/ProductDetails";
-import Products from "@/pages/Products";
-import Profile from "@/pages/Profile";
-import ShoppingCart from "@/pages/ShoppingCart";
+import AdminLayout from "@/components/layouts/AdminLayout";
+import AboutUs from "@/pages/UserPages/AboutUs";
+import Blogs from "@/pages/UserPages/Blogs";
+import Checkout from "@/pages/UserPages/Checkout";
+import ContactUs from "@/pages/UserPages/ContactUs";
+import Home from "@/pages/UserPages/Home";
+import Login from "@/pages/UserPages/Login";
+import OrderVerification from "@/pages/UserPages/OrderVerification";
+import ProductDetails from "@/pages/UserPages/ProductDetails";
+import Products from "@/pages/UserPages/Products";
+import Profile from "@/pages/UserPages/Profile";
+import ShoppingCart from "@/pages/UserPages/ShoppingCart";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -62,8 +62,12 @@ const router = createBrowserRouter([
             path: '/order/verify',
             element: <OrderVerification/>,
         },
-      ]
+      ],
     },
+    {
+        path: '/admin',
+        element: <AdminLayout/>
+    }
   ]);
 
 
