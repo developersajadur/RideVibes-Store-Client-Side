@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
 import { useToken } from "@/Hooks/useToken";
+import { useUser } from "@/Hooks/useUser";
 
 const Navbar = () => {
+  const user = useUser();
   const token = useToken();
   const [searchData, setSearchData] = useState(""); // Local state for search input
   const [open, setOpen] = useState(false); // For mobile menu toggle
@@ -56,7 +58,7 @@ const Navbar = () => {
           </form>
 
           <div className="flex items-center gap-8 text-secondary text-2xl font-medium">
-            {token ? (
+            {token && user ? (
               <NavLink to="/profile">
                 <FaUser />
               </NavLink>
@@ -64,11 +66,18 @@ const Navbar = () => {
             <NavLink to="/shopping-cart">
               <MdShoppingCart />
             </NavLink>
-            {!token ? (
+            {!token && user ? (
               <NavLink to="/login">
-                <Button className="bg-secondary text-primary">Login</Button>
+                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">Login</Button>
               </NavLink>
             ) : null}
+            {
+              token && user && user.role === 'admin' ? (
+                <NavLink to='/admin'>
+                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">Admin Panel</Button>
+                </NavLink>
+              ) : null
+            }
           </div>
         </div>
       </div>

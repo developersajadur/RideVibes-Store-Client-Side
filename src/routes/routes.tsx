@@ -1,5 +1,10 @@
 import App from "@/App";
 import AdminLayout from "@/components/layouts/AdminLayout";
+import CreateProduct from "@/pages/AdminPages/CreateProduct";
+import Dashboard from "@/pages/AdminPages/Dashboard";
+import ManageOrders from "@/pages/AdminPages/ManageOrders";
+import ManageProduct from "@/pages/AdminPages/ManageProduct";
+import ManageUsers from "@/pages/AdminPages/ManageUsers";
 import AboutUs from "@/pages/UserPages/AboutUs";
 import Blogs from "@/pages/UserPages/Blogs";
 import Checkout from "@/pages/UserPages/Checkout";
@@ -65,9 +70,35 @@ const router = createBrowserRouter([
       ],
     },
     {
-        path: '/admin',
-        element: <AdminLayout/>
-    }
+        path: "/admin",
+        element: <AdminLayout />,  // Wraps admin routes
+        children: [
+            {
+                path: "",   // This will render `Dashboard` at `/admin`
+                element: <Dashboard />,
+            },
+            {
+                path: "dashboard",
+                element: <Dashboard />,
+            },
+            {
+                path: "create-product",
+                element: <CreateProduct />,
+            },
+            {
+                path: "manage-products",
+                element: <ManageProduct />,
+            },
+            {
+                path: "manage-orders",
+                element: <ManageOrders />,
+            },
+            {
+                path: "manage-users",
+                element: <ManageUsers />,
+            },
+        ],
+    },
   ]);
 
 

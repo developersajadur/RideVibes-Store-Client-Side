@@ -3,6 +3,13 @@ import { baseApi } from "../../api/baseApi";
 
 const productApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    createProduct: builder.mutation({
+    query: (productInfo) => ({
+      url: "/bicycles/create-bicycle",
+      method: "POST",
+      body: productInfo,
+    }),
+  }),
     getAllProducts: builder.query({
         query: (args) => {
             // console.log(args);
@@ -49,5 +56,5 @@ const productApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAllProductsQuery, useGetSingleProductBySlugQuery, useGetSingleProductByIdQuery } = productApi;
+export const { useCreateProductMutation ,useGetAllProductsQuery, useGetSingleProductBySlugQuery, useGetSingleProductByIdQuery } = productApi;
 export default productApi;

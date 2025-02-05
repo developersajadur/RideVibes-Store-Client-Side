@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import{ useState } from "react";
 import { Link } from "react-router-dom";
 
 const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <div className="lg:w-80">
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(true)}
@@ -57,28 +57,17 @@ const AdminSidebar = () => {
 
           <ul className="space-y-2 font-medium">
             {[
-              { name: "Dashboard", icon: "M16.975 11H10V4.025a1 1..." },
-              { name: "Kanban", icon: "M6.143 0H1.857A1.857 1.857..." },
-              { name: "Inbox", icon: "M17.418 3.623-.018-.008a6.713..." },
-              { name: "Users", icon: "M14 2a3.963 3.963 0 0 0-1.4..." },
-              { name: "Products", icon: "M17 5.923A1 1 0 0 0 16 5h..." },
-              { name: "Sign In", icon: "M1 8h11m0 0L8 4m4 4-4 4m..." },
-              { name: "Settings", icon: "M5 5V.13a2.96 2.96 0 0 0-1.293..." },
+              { name: "Dashboard", link: 'dashboard' },
+              { name: "Create Product", link: 'create-product' },
+              { name: "Manage Product", link: 'manage-products' },
+              { name: "Manage Orders",  link: 'manage-orders'},
+              { name: "Manage Users", link: 'manage-users' },
             ].map((item, index) => (
               <li key={index}>
                 <Link
-                  to='/admin'
+                  to={`/admin/${item.link}`}
                   className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                 >
-                  <svg
-                    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d={item.icon} />
-                  </svg>
                   <span className="ms-3">{item.name}</span>
                 </Link>
               </li>
