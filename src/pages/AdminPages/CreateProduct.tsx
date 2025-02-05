@@ -7,13 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCreateProductMutation } from "@/redux/features/product/productApi";
 import { toast } from "sonner";
+import axios from "axios";
+import { useState } from "react";
 
 const categoriesList = ["Mountain", "Road", "Hybrid", "Electric"];
 const colorsList = ["Red", "Blue", "Black", "White", "Green"];
 
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
+const UPLOAD_PRESET = "sajadurrahmanpresent";
+
 const CreateProduct = () => {
   const [createProduct] = useCreateProductMutation();
-  
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -21,22 +28,56 @@ const CreateProduct = () => {
     formState: { errors },
   } = useForm();
 
+  // Upload multiple images to Cloudinary
+  const uploadImagesToCloudinary = async (files: File[]) => {
+    const uploadedUrls: string[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      try {
+        const response = await axios.post(CLOUDINARY_URL, formData);
+        uploadedUrls.push(response.data.secure_url);
+      } catch (error) {
+        toast.error("Image upload failed.");
+      }
+    }
+    return uploadedUrls;
+  };
+
   const onSubmit = async (data: any) => {
-    // Convert string inputs to arrays
+    let uploadedImageUrls = previewImages;
+
+    // If new images are selected, upload them to Cloudinary
+    if (selectedImages.length > 0) {
+      uploadedImageUrls = await uploadImagesToCloudinary(selectedImages);
+    }
+
     const formattedData = {
       ...data,
       categories: data.categories ? [data.categories] : [],
       colors: data.colors ? [data.colors] : [],
-      images: data.images ? data.images.split(",").map((img: string) => img.trim()) : [],
+      images: uploadedImageUrls.length > 0 ? uploadedImageUrls : data.images.split(",").map((img: string) => img.trim()),
     };
 
     try {
-        const res = await createProduct(formattedData);
-        if(res.data.success){
-            toast.success('Product created successfully')
-        }
+      const res = await createProduct(formattedData);
+      if (res.data.success) {
+        toast.success('Product created successfully');
+      }
     } catch (error) {
-        toast.error('Failed to create product')
+      toast.error('Failed to create product');
+    }
+  };
+
+  // Handle file selection for multiple product images
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setSelectedImages(newFiles);
+      setPreviewImages(newFiles.map((file) => URL.createObjectURL(file)));
     }
   };
 
@@ -109,10 +150,28 @@ const CreateProduct = () => {
               {errors.stockQuantity && <p className="text-red-500 text-sm">{errors.stockQuantity.message as string}</p>}
             </div>
 
-            {/* Images (Comma-Separated Input) */}
+            {/* Product Image Upload */}
             <div>
-              <Label>Images (URLs, comma separated)</Label>
-              <Input {...register("images")} placeholder="Enter image URLs separated by commas" />
+              <Label>Product Images</Label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="w-full border p-2 rounded-md"
+              />
+              {previewImages.length > 0 && (
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  {previewImages.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Preview ${index + 1}`}
+                      className="w-32 h-32 object-cover"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Video URL */}

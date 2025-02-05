@@ -5,6 +5,7 @@ import Dashboard from "@/pages/AdminPages/Dashboard";
 import ManageOrders from "@/pages/AdminPages/ManageOrders";
 import ManageProduct from "@/pages/AdminPages/ManageProduct";
 import ManageUsers from "@/pages/AdminPages/ManageUsers";
+import UpdateProduct from "@/pages/AdminPages/UpdateProduct";
 import AboutUs from "@/pages/UserPages/AboutUs";
 import Blogs from "@/pages/UserPages/Blogs";
 import Checkout from "@/pages/UserPages/Checkout";
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
             {
                 path: "manage-products",
                 element: <ManageProduct />,
+            },
+            {
+                path: "manage-products/update-product/:productId",
+                element: <UpdateProduct />,
             },
             {
                 path: "manage-orders",

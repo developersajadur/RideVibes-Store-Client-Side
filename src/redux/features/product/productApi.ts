@@ -9,6 +9,7 @@ const productApi = baseApi.injectEndpoints({
       method: "POST",
       body: productInfo,
     }),
+    invalidatesTags: ['products']
   }),
     getAllProducts: builder.query({
         query: (args) => {
@@ -26,6 +27,7 @@ const productApi = baseApi.injectEndpoints({
               params: params,
             };
           },
+          providesTags: ['products'],
       transformResponse: (response: TResponseRedux<any>) => {
         return {
           data: response.data,
@@ -53,8 +55,30 @@ const productApi = baseApi.injectEndpoints({
         }
       }
     }),
+    updateProduct: builder.mutation({
+      query: ({ productId, updatedData }) => {
+        console.log(updatedData, productId);
+        return {
+          url: `/bicycles/${productId}`,
+        method: "PUT",
+        body: updatedData, 
+        }
+      },
+      invalidatesTags: ['products']
+    }),
+    
+    deleteProduct: builder.mutation({
+      query: (productId) => {
+        // console.log(args);
+        return {
+          url: `/bicycles/${productId}`,
+          method: 'DELETE',
+        }
+      },
+      invalidatesTags: ['products']
+    }),
   }),
 });
 
-export const { useCreateProductMutation ,useGetAllProductsQuery, useGetSingleProductBySlugQuery, useGetSingleProductByIdQuery } = productApi;
+export const { useCreateProductMutation ,useGetAllProductsQuery, useGetSingleProductBySlugQuery, useGetSingleProductByIdQuery, useDeleteProductMutation, useUpdateProductMutation } = productApi;
 export default productApi;

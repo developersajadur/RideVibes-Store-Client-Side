@@ -26,7 +26,7 @@ import { useGetMyOrdersQuery } from "@/redux/features/order/orderApi";
 
 const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
-const UPLOAD_PRESET = "sajadurrahmanpresent"; // Cloudinary upload preset
+const UPLOAD_PRESET = "sajadurrahmanpresent";
 
 const Profile = () => {
   const dispatch = useAppDispatch();

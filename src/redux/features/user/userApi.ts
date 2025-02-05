@@ -12,13 +12,16 @@ const userApi = baseApi.injectEndpoints({
                }
             }
         }),
-        updateUser: builder.mutation({
-            query: (args) => ({
-                url: 'users/update-user',
-                method: 'PUT',
-                body: args,
-            }),
-        }),
+        updateProduct: builder.mutation({
+            query: ({ productId, updatedData }) => {
+              console.log("Updated Data before sending:", updatedData);
+              return {
+                url: `/bicycles/${productId}`,
+                method: "PUT",
+                body: updatedData, 
+              };
+            },
+          }),          
         changePassword: builder.mutation({
             query: (args) => ({
                 url: 'users/change-password',
