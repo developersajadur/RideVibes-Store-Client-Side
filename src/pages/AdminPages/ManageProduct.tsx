@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDeleteProductMutation, useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert
 
 const ManageProduct = () => {

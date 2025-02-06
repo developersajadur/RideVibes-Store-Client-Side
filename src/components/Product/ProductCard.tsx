@@ -1,5 +1,4 @@
 import { TCartData, TProduct } from "@/types";
-import { useNavigate } from "react-router-dom";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -32,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <Card className=" rounded-md overflow-hidden">
         <Link  to={`/bicycles/${product.slug}`}>
         <img
-          src="/src/assets/bicycle-pic-2.jpg"
+          src={product?.images[0]}
           alt={product.name}
           className="w-full h-48 object-cover"
         />
@@ -64,6 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               onClick={() => handleSaveProductOnLocalStorage(product)}
               variant="outline"
               className="w-1/2"
+              disabled
             >
               Add to Cart
             </Button>

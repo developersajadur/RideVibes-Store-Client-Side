@@ -30,7 +30,6 @@ const Navbar = () => {
     event.preventDefault();
     navigate(`/bicycles/?search=${searchData}`);
   };
-  
 
   return (
     <div className="bg-primary w-full px-2 md:px-8 lg:px-10 py-4 md:py-5 lg:py-6">
@@ -51,33 +50,40 @@ const Navbar = () => {
             <Input
               type="text"
               value={searchData}
-              onChange={(e) => setSearchData(e.target.value)} 
+              onChange={(e) => setSearchData(e.target.value)}
               placeholder="Search Here"
               className="pl-10 bg-transparent border-secondary focus:ring-0 focus:outline-none text-white"
             />
           </form>
 
           <div className="flex items-center gap-8 text-secondary text-2xl font-medium">
-            {token && user ? (
+            {token && user && user.role !== "admin" ? (
               <NavLink to="/profile">
                 <FaUser />
               </NavLink>
             ) : null}
-            <NavLink to="/shopping-cart">
-              <MdShoppingCart />
-            </NavLink>
-            {!token && user ? (
-              <NavLink to="/login">
-                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">Login</Button>
+
+            {token && user && user.role !== "admin" ? (
+              <NavLink to="#">
+                <MdShoppingCart />
               </NavLink>
             ) : null}
-            {
-              token && user && user.role === 'admin' ? (
-                <NavLink to='/admin'>
-                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">Admin Panel</Button>
-                </NavLink>
-              ) : null
-            }
+
+            {!token ? (
+              <NavLink to="/login">
+                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">
+                  Login
+                </Button>
+              </NavLink>
+            ) : null}
+
+            {token && user && user.role === "admin" ? (
+              <NavLink to="/admin">
+                <Button className="bg-secondary text-primary hover:bg-secondary hover:text-primary">
+                  Admin Panel
+                </Button>
+              </NavLink>
+            ) : null}
           </div>
         </div>
       </div>
@@ -98,8 +104,8 @@ const Navbar = () => {
             />
             <Input
               type="text"
-              value={searchData} // Bind input value to state
-              onChange={(e) => setSearchData(e.target.value)} // Update state on input change
+              value={searchData}
+              onChange={(e) => setSearchData(e.target.value)}
               placeholder="Search Here"
               className="pl-10 bg-transparent border-secondary focus:ring-0 focus:outline-none text-white"
             />
@@ -120,14 +126,18 @@ const Navbar = () => {
                     </Link>
                   </SheetHeader>
                   <div className="flex flex-col gap-5 text-primary text-lg font-medium">
-                    {token ? (
+                    {token && user && user.role !== "admin" ? (
                       <NavLink to="/profile" onClick={handleClose}>
                         Profile
                       </NavLink>
                     ) : null}
-                    <NavLink to="/shopping-cart" onClick={handleClose}>
-                      Cart
-                    </NavLink>
+
+                    {token && user && user.role !== "admin" ? (
+                      <NavLink to="/shopping-cart" onClick={handleClose}>
+                        Cart
+                      </NavLink>
+                    ) : null}
+
                     <NavLink to="/bicycles" onClick={handleClose}>
                       Bicycles
                     </NavLink>
@@ -140,10 +150,19 @@ const Navbar = () => {
                     <NavLink to="/blogs" onClick={handleClose}>
                       Blogs
                     </NavLink>
+
                     {!token ? (
                       <NavLink onClick={handleClose} className="w-full" to="/login">
                         <Button className="bg-secondary text-primary w-full">
                           Login
+                        </Button>
+                      </NavLink>
+                    ) : null}
+
+                    {token && user && user.role === "admin" ? (
+                      <NavLink to="/admin" onClick={handleClose}>
+                        <Button className="bg-secondary text-primary w-full">
+                          Admin Panel
                         </Button>
                       </NavLink>
                     ) : null}

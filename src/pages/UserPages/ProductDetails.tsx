@@ -1,23 +1,24 @@
-import React, { useState } from "react";
-
-// react icons
+import { useState } from "react";
 import {
   IoHeart,
   IoHeartOutline,
   IoShareSocialOutline,
 } from "react-icons/io5";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetSingleProductBySlugQuery } from "@/redux/features/product/productApi";
 import { TCartData, TProduct } from "@/types";
 import { toast } from "sonner";
 
 const ProductDetails = () => {
+
   const params = useParams();
-  const { data, isLoading, isError } = useGetSingleProductBySlugQuery({
+  const { data, } = useGetSingleProductBySlugQuery({
     slug: params.slug || "",
   });
+
   const product = data?.data as TProduct;
+  console.log(product?.category);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -37,8 +38,10 @@ const ProductDetails = () => {
 
   const handleSaveProductOnLocalStorage = (product: TProduct) => {
     const cartItems = JSON.parse(localStorage.getItem("cart-items") || "[]");
-  
-    const existingProduct = cartItems.find((item: TCartData) => item._id === product._id);   
+
+    const existingProduct = cartItems.find(
+      (item: TCartData) => item._id === product._id
+    );
     if (existingProduct) {
       toast.error("You have already added this product!");
       return;
@@ -49,7 +52,7 @@ const ProductDetails = () => {
   };
 
   return (
-    <div className="px-2 md:px-8 lg:px-10 mt-5 lg:mt-10 mb:5 lg:mb-10">
+    <div className="px-2 md:px-8 lg:px-10 mt-5 lg:mt-10 mb-5 lg:mb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {/* Image Section */}
         <div className="relative">
@@ -66,7 +69,6 @@ const ProductDetails = () => {
                 <button className="bg-gray-100 rounded-md w-max text-gray-600 p-2.5 hover:bg-gray-200">
                   <IoShareSocialOutline className="w-5 h-5" />
                 </button>
-
                 <button
                   className="bg-gray-100 rounded-md w-max text-gray-600 p-2.5 hover:bg-gray-200"
                   onClick={() => setIsFavorite(!isFavorite)}
@@ -120,64 +122,56 @@ const ProductDetails = () => {
 
         {/* Product Details Section */}
         <div className="flex flex-col">
-          <div className="flex justify-between items-start">
-            <div className="w-full">
-              <h1 className="text-[1.6rem] md:text-[1.8rem] text-gray-800 font-semibold mb-3">
-                {product?.name}
-              </h1>
-              <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-1 md:gap-4 mb-4">
-                <div className="flex items-center">
-                  <span className="text-[1.4rem] font-semibold text-gray-800">
-                    ৳ {product?.price}
-                  </span>
-                  <span className="text-gray-400 text-[1rem] line-through ml-2">
-                    £40.00
-                  </span>
-                </div>
-              </div>
-            </div>
+          <h1 className="text-[1.6rem] md:text-[1.8rem] text-gray-800 font-semibold mb-3">
+            {product?.name}
+          </h1>
+
+          <div className="text-gray-600 mb-3">
+            <span className="font-semibold">Brand:</span> {product?.brand}
           </div>
 
-          <div className="mb-6 border-t-[2px] border-gray-200 border-dashed mt-1 pt-6">
+          <div className="text-gray-600 mb-3">
+            <span className="font-semibold">Categories:</span>{" "}
+            {product?.category}
+          </div>
+
+          <div className="text-gray-600 mb-3">
+            <span className="font-semibold">Stock Available:</span>{" "}
+            {product?.stockQuantity} pcs
+          </div>
+
+          <div className="text-gray-600 mb-3">
+            <span className="font-semibold">Weight:</span> {product?.weight} KG
+          </div>
+
+          {/* {product?.discount > 0 && (
+            <div className="text-gray-600 mb-3">
+              <span className="font-semibold text-red-600">Discount:</span> -{product?.discount}%
+            </div>
+          )} */}
+
+          <h2 className="text-[1.4rem] font-semibold text-gray-800 mb-4">
+            {product?.price} BDT
+          </h2>
+
+          <div className="border-t-[2px] border-gray-200 border-dashed mt-1 pt-6">
             <h2 className="text-gray-700 font-semibold mb-2">Description:</h2>
-            <p className="text-[0.9rem] text-gray-600">
-              Boba etiam ut bulla tea est potus electus singulari compositione
-              saporum et textuum, quae in Taiwan annis 1980 orta sunt. Boba
-              refert ad pitas marnicas tapiocas in fundo potus inventas, quae
-              typice lacte tea nigro sapiuntur.
-              <button className="text-blue-600 hover:underline ml-1">
-                See More...
-              </button>
-            </p>
+            <p className="text-[0.9rem] text-gray-600">{product?.description}</p>
           </div>
 
-          <div className="mb-5">
-            <p className="mt-2 text-primary">
-              Available Colors:{" "}
-              <span className="font-semibold text-primary">
-                {product?.colors?.length > 0
-                  ? product?.colors?.join(", ")
-                  : "Color Not Found"}
-              </span>
-            </p>
-          </div>
-
-          <div className="mb-5">
-            <div className=" mb-2">
-              <h2 className=" text-primary">
-                Weight: <span className="text-primary font-semibold">{product?.weight} KG</span>
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4 mt-auto">
-            <button onClick={() => handleSaveProductOnLocalStorage(product)}
-             className="grow py-3 px-6 bg-secondary text-white hover:bg-primary hover:text-secondary rounded-md">
-            🛒 Add To Cart
+          <div className="mt-auto flex flex-col md:flex-row gap-4">
+            <button
+            disabled
+              onClick={() => handleSaveProductOnLocalStorage(product)}
+              className=" py-3 px-6 bg-secondary text-white hover:bg-primary hover:text-secondary rounded-md"
+            >
+              🛒 Add To Cart
             </button>
-            <button className="grow py-3 px-6 border bg-transparent border-gray-300 text-primary hover:bg-gray-100 rounded-md">
+            <Link  to={`/checkout/${product?._id}`}>
+            <button  className="grow py-3 px-6 border bg-transparent border-gray-300 text-primary hover:bg-gray-100 rounded-md">
               Checkout Now
             </button>
+            </Link>
           </div>
         </div>
       </div>

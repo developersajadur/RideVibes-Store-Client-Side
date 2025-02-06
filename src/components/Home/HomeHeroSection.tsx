@@ -17,7 +17,7 @@ const HomeHeroSection = () => {
             <div
               style={{
                 backgroundImage:
-                  "linear-gradient(180deg, rgba(7, 2, 17, 0.7) 0%, rgba(7, 2, 17, 0.00) 60%), url(/src/assets/bicycle-pic-5.jpg)",
+                  "linear-gradient(180deg, rgba(7, 2, 17, 0.7) 0%, rgba(7, 2, 17, 0.00) 60%), url(https://res.cloudinary.com/devsajadurrahman/image/upload/v1738846301/sh7x3sxfxln075xfibyq.jpg)",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 height: "100%",
@@ -43,7 +43,7 @@ const HomeHeroSection = () => {
             <div
               style={{
                 backgroundImage:
-                  "linear-gradient(180deg, rgba(7, 2, 17, 0.7) 0%, rgba(7, 2, 17, 0.00) 60%), url(/src/assets/bicycle-pic-4.jpg)",
+                  "linear-gradient(180deg, rgba(7, 2, 17, 0.7) 0%, rgba(7, 2, 17, 0.00) 60%), url(https://res.cloudinary.com/devsajadurrahman/image/upload/v1738846301/b5rcmk6urj5e2axxelvh.jpg)",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 height: "100%",

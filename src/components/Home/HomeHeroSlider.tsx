@@ -9,21 +9,21 @@ import { Link } from "react-router-dom";
 // Sample slider data
 const sliderData = [
   {
-    imageUrl: "/src/assets/bicycle-slider-1.jpg",
+    imageUrl: "https://res.cloudinary.com/devsajadurrahman/image/upload/v1738846301/rayhggs4vmebeeit1p7z.jpg",
     title: "RideVibes",
     description:
       "Our Bicycle Shop is a place where you can find everything you need for your adventure.",
     link: "/bicycles",
   },
   {
-    imageUrl: "/src/assets/bicycle-pic-2.jpg",
+    imageUrl: "https://res.cloudinary.com/devsajadurrahman/image/upload/v1738846301/d0bjjrghancmad7kkxlc.jpg",
     title: "Adventure Awaits",
     description:
       "Explore our collection of bikes designed for every kind of adventure.",
     link: "/bicycles",
   },
   {
-    imageUrl: "/src/assets/bicycle-pic-3.jpg",
+    imageUrl: "https://res.cloudinary.com/devsajadurrahman/image/upload/v1738846302/rcx0s42ypxmttnr3rdba.jpg",
     title: "Find Your Perfect Ride",
     description:
       "From mountain bikes to road bikes, we have it all. Find your perfect match today.",

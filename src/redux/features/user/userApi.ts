@@ -1,5 +1,5 @@
 import { baseApi } from "@/redux/api/baseApi";
-
+import { TQueryParam, TResponseRedux } from "@/types";
 
 const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -8,20 +8,41 @@ const userApi = baseApi.injectEndpoints({
                return {
                 url: `/users/user/${args}`,
                 method: 'GET',
-                body: args.data,
                }
             }
         }),
-        updateProduct: builder.mutation({
-            query: ({ productId, updatedData }) => {
-              console.log("Updated Data before sending:", updatedData);
+        getAllUser: builder.query({
+          query: (args) => {
+              const params = new URLSearchParams();
+      
+              if (args) {
+                args.forEach((item: TQueryParam) => {
+                  params.append(item.name, item.value as string);
+                });
+              }
               return {
-                url: `/bicycles/${productId}`,
-                method: "PUT",
-                body: updatedData, 
+                url: '/users',
+                method: 'GET',
+                params: params,
               };
             },
-          }),          
+            providesTags: ['users'],
+        transformResponse: (response: TResponseRedux<any>) => {
+          return {
+            data: response.data,
+          };
+        },
+      }),
+        updateUser: builder.mutation({
+          query: (updatedData) => {
+            return {
+              url: '/users/update-user',
+              method: "PUT",
+              body: updatedData, 
+            };
+          },
+          invalidatesTags: ['users']
+        }),
         changePassword: builder.mutation({
             query: (args) => ({
                 url: 'users/change-password',
@@ -29,8 +50,23 @@ const userApi = baseApi.injectEndpoints({
                 body: args,
             }),
         }),
+        blockUser: builder.mutation({
+            query: (userId) => {
+             return {
+              url: '/users/block-user',
+              method: 'POST',
+              body: {userId},
+             }
+            },
+        }),
+        unBlockUser: builder.mutation({
+            query: (userId) => ({
+                url: '/users/unblock-user',
+                method: 'POST',
+                body: {userId},
+            }),
+        }),
     })
-})
+});
 
-
-export const {useGetUserQuery, useUpdateUserMutation, useChangePasswordMutation} = userApi;
+export const {useGetUserQuery, useUpdateUserMutation, useChangePasswordMutation, useGetAllUserQuery, useBlockUserMutation, useUnBlockUserMutation} = userApi;

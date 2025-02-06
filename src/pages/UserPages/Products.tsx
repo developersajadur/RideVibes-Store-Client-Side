@@ -1,19 +1,28 @@
-import ProductCard from "@/components/layouts/ProductCard";
+import ProductCard from "@/components/Product/ProductCard";
 import { useGetAllProductsQuery } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { brandOptions, categoryOptions } from "@/utils/product.utils";
+
+type FormData = {
+  category: string;
+  brand: string;
+  minPrice: string;
+  maxPrice: string;
+  availability: string;
+};
 
 const Products = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("search") || "";
 
-  const { register, handleSubmit, setValue, reset } = useForm({
+  const { register, handleSubmit, setValue, reset } = useForm<FormData>({
     defaultValues: {
       category: "all",
       brand: "all",
@@ -23,24 +32,22 @@ const Products = () => {
     },
   });
 
-  const [query, setQuery] = useState<any[]>([]);
+  const [query, setQuery] = useState<{ name: string; value: string | boolean }[]>([]);
 
   useEffect(() => {
     if (searchQuery) {
       setQuery([{ name: "search", value: searchQuery }]);
-    }else{
+    } else {
       setQuery([]);
     }
   }, [searchQuery]);
 
   const { data } = useGetAllProductsQuery(query.length ? query : []);
-
   const products = data?.data?.data;
 
-  const onSubmit = (formData: any) => {
+  const onSubmit: SubmitHandler<FormData> = (formData) => {
     const { minPrice, maxPrice, ...otherFilters } = formData;
-
-    let newQuery: any[] = [];
+    let newQuery: { name: string; value: string | boolean }[] = [];
 
     Object.entries(otherFilters).forEach(([key, value]) => {
       if (value !== "all" && value !== "") {
@@ -52,9 +59,9 @@ const Products = () => {
       }
     });
 
-    if (minPrice) newQuery.push({ name: "minPrice", value: parseFloat(minPrice) });
-    if (maxPrice) newQuery.push({ name: "maxPrice", value: parseFloat(maxPrice) });
-
+    if (minPrice) newQuery.push({ name: "minPrice", value: String(parseFloat(minPrice)) }); // Cast to string
+    if (maxPrice) newQuery.push({ name: "maxPrice", value: String(parseFloat(maxPrice)) }); // Cast to string
+    
     if (searchQuery) newQuery.push({ name: "search", value: searchQuery });
 
     setQuery(newQuery);
@@ -77,29 +84,30 @@ const Products = () => {
       <div className="w-full p-4 border rounded-md">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row items-center justify-center gap-4">
           {/* Category Select */}
-          <Select onValueChange={(value) => setValue("category", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("category", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="sports">Sports</SelectItem>
-              <SelectItem value="cruiser">Cruiser</SelectItem>
-              <SelectItem value="naked">Naked</SelectItem>
+              {categoryOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
           {/* Brand Select */}
-          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("brand", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Select Brand" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="yamaha">Yamaha</SelectItem>
-              <SelectItem value="honda">Honda</SelectItem>
-              <SelectItem value="ktm">KTM</SelectItem>
-              <SelectItem value="suzuki">Suzuki</SelectItem>
+              {brandOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -110,7 +118,7 @@ const Products = () => {
           </div>
 
           {/* Availability Select */}
-          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="">
+          <Select onValueChange={(value) => setValue("availability", value)} defaultValue="all">
             <SelectTrigger className="w-full md:w-auto">
               <SelectValue placeholder="Availability" />
             </SelectTrigger>

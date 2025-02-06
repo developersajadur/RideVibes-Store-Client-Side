@@ -10,8 +10,8 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useState } from "react";
 
-const categoriesList = ["Mountain", "Road", "Hybrid", "Electric"];
-const colorsList = ["Red", "Blue", "Black", "White", "Green"];
+// Import Select Options
+import { brandOptions, colorsList, categoryOptions } from "@/utils/product.utils";
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
 const UPLOAD_PRESET = "sajadurrahmanpresent";
@@ -100,7 +100,25 @@ const CreateProduct = () => {
             {/* Brand */}
             <div>
               <Label>Brand</Label>
-              <Input {...register("brand", { required: "Brand is required" })} />
+              <Controller
+                control={control}
+                name="brand"
+                rules={{ required: "Brand is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a brand" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {brandOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
               {errors.brand && <p className="text-red-500 text-sm">{errors.brand.message as string}</p>}
             </div>
 
@@ -124,9 +142,9 @@ const CreateProduct = () => {
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categoriesList.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
+                      {categoryOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -193,9 +211,9 @@ const CreateProduct = () => {
                       <SelectValue placeholder="Select a color" />
                     </SelectTrigger>
                     <SelectContent>
-                      {colorsList.map((color) => (
-                        <SelectItem key={color} value={color}>
-                          {color}
+                      {colorsList.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

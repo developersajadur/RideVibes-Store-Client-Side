@@ -5,14 +5,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUpdateProductMutation } from "@/redux/features/product/productApi";
+import {useUpdateProductMutation } from "@/redux/features/product/productApi";
 import { toast } from "sonner";
 import axios from "axios";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-const categoriesList = ["Mountain", "Road", "Hybrid", "Electric"];
-const colorsList = ["Red", "Blue", "Black", "White", "Green"];
+// Import Select Options
+import { brandOptions, colorsList, categoryOptions } from "@/utils/product.utils";
 
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/devsajadurrahman/image/upload";
 const UPLOAD_PRESET = "sajadurrahmanpresent";
@@ -33,16 +33,17 @@ type FormData = {
 };
 
 const UpdateProduct = () => {
-    const { productId } = useParams<{ productId: string }>();
+  const { productId } = useParams<{ productId: string }>();
   const [updateProduct] = useUpdateProductMutation();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  // const {data: productData} = useGetSingleProductByIdQuery(undefined)
 
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { },
   } = useForm<FormData>();
 
   const uploadImages = async (files: File[]) => {
@@ -66,9 +67,9 @@ const UpdateProduct = () => {
     if (selectedImages.length > 0) {
       imageUrls = await uploadImages(selectedImages);
     }
-  
+
     const updatedData: Record<string, any> = {};
-  
+
     // Only add changed fields to updatedData
     if (data.name) updatedData.name = data.name;
     if (data.brand) updatedData.brand = data.brand;
@@ -79,12 +80,14 @@ const UpdateProduct = () => {
     if (imageUrls.length > 0) updatedData.images = imageUrls;
     if (data.videoUrl) updatedData.videoUrl = data.videoUrl;
     if (data.colors) updatedData.colors = [data.colors];
-  
+    if (data.weight) updatedData.weight = data.weight;
+    if (data.discount) updatedData.discount = data.discount;
+
     if (Object.keys(updatedData).length === 0) {
       toast.error("No changes detected.");
       return;
     }
-  
+
     try {
       const res = await updateProduct({ productId, updatedData });
       if (res.data.success) {
@@ -96,7 +99,6 @@ const UpdateProduct = () => {
       toast.error("Failed to update product");
     }
   };
-  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
@@ -116,7 +118,24 @@ const UpdateProduct = () => {
             <Input {...register("name")} />
 
             <Label>Brand</Label>
-            <Input {...register("brand")} />
+            <Controller
+              control={control}
+              name="brand"
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a brand" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brandOptions.map((brand) => (
+                      <SelectItem key={brand.value} value={brand.value}>
+                        {brand.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
 
             <Label>Price ($)</Label>
             <Input type="number" {...register("price", { valueAsNumber: true })} />
@@ -131,9 +150,9 @@ const UpdateProduct = () => {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categoriesList.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
+                    {categoryOptions.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -171,14 +190,30 @@ const UpdateProduct = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {colorsList.map((color) => (
-                      <SelectItem key={color} value={color}>
-                        {color}
+                      <SelectItem key={color.value} value={color.value}>
+                        {color.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
             />
+
+            {/* Weight Field */}
+            <div>
+              <Label>Weight (kg)</Label>
+              <Input
+                type="number"
+                step="0.1"
+                {...register("weight", { valueAsNumber: true })}
+              />
+            </div>
+
+            {/* Discount Field */}
+            <div>
+              <Label>Discount (%)</Label>
+              <Input type="number" {...register("discount", { valueAsNumber: true })} />
+            </div>
 
             <Button className="bg-blue-500 w-full" type="submit">
               Update Product

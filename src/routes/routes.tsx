@@ -1,5 +1,6 @@
 import App from "@/App";
 import AdminLayout from "@/components/layouts/AdminLayout";
+import ProtectedRoute from "@/components/layouts/ProtectedRoute";
 import CreateProduct from "@/pages/AdminPages/CreateProduct";
 import Dashboard from "@/pages/AdminPages/Dashboard";
 import ManageOrders from "@/pages/AdminPages/ManageOrders";
@@ -16,6 +17,7 @@ import OrderVerification from "@/pages/UserPages/OrderVerification";
 import ProductDetails from "@/pages/UserPages/ProductDetails";
 import Products from "@/pages/UserPages/Products";
 import Profile from "@/pages/UserPages/Profile";
+import Register from "@/pages/UserPages/Register";
 import ShoppingCart from "@/pages/UserPages/ShoppingCart";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -33,8 +35,12 @@ const router = createBrowserRouter([
             element: <Login/>,
         },
         {
+            path: '/register',
+            element: <Register/>,
+        },
+        {
             path: '/profile',
-            element: <Profile/>,
+            element: <ProtectedRoute role="customer"><Profile/></ProtectedRoute>,
         },
         {
             path: '/bicycles',
@@ -46,7 +52,7 @@ const router = createBrowserRouter([
         },
         {
             path: '/shopping-cart',
-            element: <ShoppingCart/>,
+            element: <ProtectedRoute role="customer"><ShoppingCart/></ProtectedRoute>,
         },
         {
             path: '/about-us',
@@ -62,17 +68,21 @@ const router = createBrowserRouter([
         },
         {
             path: '/checkout/:productId',
-            element: <Checkout/>,
+            element: <ProtectedRoute role="customer"><Checkout/></ProtectedRoute>,
         },
         {
             path: '/order/verify',
-            element: <OrderVerification/>,
+            element: <ProtectedRoute role="customer"><OrderVerification/></ProtectedRoute>,
         },
       ],
     },
     {
         path: "/admin",
-        element: <AdminLayout />,  // Wraps admin routes
+        element: (
+            <ProtectedRoute role="admin">
+                <AdminLayout />
+            </ProtectedRoute>
+        ),  // Wraps admin routes
         children: [
             {
                 path: "",   // This will render `Dashboard` at `/admin`

@@ -36,7 +36,6 @@ const Profile = () => {
   const [updateUser] = useUpdateUserMutation();
   const [changePassword] = useChangePasswordMutation()
   const {data: orders} = useGetMyOrdersQuery({})
-  console.log(orders);
   const user = data?.data;
 
   const { register, handleSubmit, reset } = useForm({
@@ -49,7 +48,6 @@ const Profile = () => {
   const {
     register: registerPassword,
     handleSubmit: handlePasswordSubmit,
-    reset: resetPassword,
   } = useForm();
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -58,10 +56,6 @@ const Profile = () => {
   );
   const [loading, setLoading] = useState(false);
 
-//   const [orders, setOrders] = useState([
-//     { id: "1234", item: "Mountain Bike", price: "$500", status: "Delivered" },
-//     { id: "5678", item: "Helmet", price: "$50", status: "Processing" },
-//   ]);
 
   const handleLogOut = () => {
     dispatch(logOutUser());
